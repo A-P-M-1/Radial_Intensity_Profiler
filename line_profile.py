@@ -5,7 +5,7 @@ from astropy.wcs import WCS
 from matplotlib import colormaps
 
 
-def make_line(user_file_path, angle, line_limit_x_axis=None, line_limit_y_axis=None, wcs_xlim=None, wcs_ylim=None, image_limit_x = None, image_limit_y = None):
+def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None, image_limit_x=None, image_limit_y=None):
 
   with fits.open(user_file_path) as hdul:
     hdul.info()
@@ -18,7 +18,7 @@ def make_line(user_file_path, angle, line_limit_x_axis=None, line_limit_y_axis=N
     im_lim_x = image_limit_x
   else:
     im_lim_x = head_user['NAXIS1']
-  
+
   if image_limit_y is not None:
     im_lim_y = image_limit_y
   else:
@@ -50,24 +50,24 @@ def make_line(user_file_path, angle, line_limit_x_axis=None, line_limit_y_axis=N
 
   elif xlim is None and type(ylim) is int:
     ylim = ylim
-    xlim = head_user['NAXIS1']
+    xlim = im_lim_x
 
   elif type(xlim) is int and ylim is None:
     xlim = xlim
-    ylim = head_user['NAXIS2']
+    ylim = im_lim_y
 
   elif xlim is None and ylim is None:
-    ylim = head_user['NAXIS2']
-    xlim = head_user['NAXIS1']
+    ylim = im_lim_y
+    xlim = im_lim_x
 
   else:
     raise TypeError("x or y or both are unsuitable datatypes. Check is they are both integers")
 
-  if xlim > head_user['NAXIS1']:
-    raise ValueError("'xlim' must be less than or equal to the number of pixels in the image")
+  if xlim > im_lim_x:
+    raise ValueError("'xlim' must be less than or equal to the number of pixels in the (possibly cropped) image")
 
-  if ylim > head_user['NAXIS2']:
-    raise ValueError("'ylim' must be less than or equal to the number of pixels in the image")
+  if ylim > im_lim_y:
+    raise ValueError("'ylim' must be less than or equal to the number of pixels in the (possibly cropped) image")
 
   vertical = ''
 

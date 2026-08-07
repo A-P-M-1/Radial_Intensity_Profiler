@@ -29,9 +29,13 @@ with st.sidebar:
         help="Position angle of the cut line.",
     )
 
-    st.markdown("**Optional limits** (leave at 0 to use the full image)")
-    xlim_input = st.number_input("xlim (pixels)", min_value=0, value=0, step=1)
-    ylim_input = st.number_input("ylim (pixels)", min_value=0, value=0, step=1)
+    st.markdown("**Optional line limits** (leave at 0 to use the full image)")
+    line_limit_x_axis = st.number_input("xlim (pixels)", min_value=0, value=0, step=1)
+    line_limit_y_axis = st.number_input("ylim (pixels)", min_value=0, value=0, step=1)
+
+    st.markdown("**Optional image crop** (leave at 0 to use the full image)")
+    image_limit_x = st.number_input("image_limit_x", min_value=0, value=0, step=1)
+    image_limit_y = st.number_input("image_limit_y", min_value=0, value=0, step=1)
 
     use_wcs_xlim = st.checkbox("Use wcs_xlim instead")
     use_wcs_ylim = st.checkbox("Use wcs_ylim instead")
@@ -50,8 +54,10 @@ if run_button:
         tmp.write(uploaded_file.getbuffer())
         tmp_path = tmp.name
 
-    xlim = int(xlim_input) if xlim_input > 0 else None
-    ylim = int(ylim_input) if ylim_input > 0 else None
+    xlim = int(line_limit_x_axis) if line_limit_x_axis > 0 else None
+    ylim = int(line_limit_y_axis) if line_limit_y_axis > 0 else None
+    image_limit_x_para = int(image_limit_x) if image_limit_x > 0 else None
+    image_limit_y_para = int(image_limit_y) if image_limit_y > 0 else None
     wcs_xlim = "yes" if use_wcs_xlim else None
     wcs_ylim = "yes" if use_wcs_ylim else None
 
@@ -64,6 +70,8 @@ if run_button:
                 ylim=ylim,
                 wcs_xlim=wcs_xlim,
                 wcs_ylim=wcs_ylim,
+                image_limit_x=image_limit_x_para,
+                image_limit_y=image_limit_y_para,
             )
 
         col1, col2 = st.columns(2)
