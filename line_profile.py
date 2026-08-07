@@ -5,13 +5,26 @@ from astropy.wcs import WCS
 from matplotlib import colormaps
 
 
-def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None):
+def make_line(user_file_path, angle, line_limit_x_axis=None, line_limit_y_axis=None, wcs_xlim=None, wcs_ylim=None, image_limit_x = None, image_limit_y = None):
+
   with fits.open(user_file_path) as hdul:
     hdul.info()
     primary_hdu_user = hdul[0]
     head_user = primary_hdu_user.header
     image_data_user = primary_hdu_user.data
-  image_data_squeezed_user = np.squeeze(image_data_user)
+  image_data_squeezed_user_o = np.squeeze(image_data_user)
+
+  if image_limit_x is not None:
+    im_lim_x = image_limit_x
+  else:
+    im_lim_x = head_user['NAXIS1']
+  
+  if image_limit_y is not None:
+    im_lim_y = image_limit_y
+  else:
+    im_lim_y = head_user['NAXIS2']
+
+  image_data_squeezed_user = image_data_squeezed_user_o[:im_lim_y, :im_lim_x]
 
   if wcs_xlim is not None:
     xlim = 'unknown'
@@ -138,7 +151,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
           list_pix_x.remove(pix_x)
           list_pix_y.remove(prev_pix_y - 1)
 
-  fig = plt.figure(figsize=(10, 10))
+  fig = plt.figure(figsize=(15, 15))
   ax = fig.add_subplot(111)
   im = ax.imshow(image_data_squeezed_user, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user),
                  vmax=np.max(image_data_squeezed_user))
@@ -158,7 +171,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
   for x2, y2 in zip(list_pix_x, list_pix_y):
     dist.append(np.abs(np.sqrt((x2 - x1)**2 + (y2 - y1)**2)))
 
-  fig = plt.figure(figsize=(10, 10))
+  fig = plt.figure(figsize=(15, 15))
   ax = fig.add_subplot(111)
   ax.plot(dist, vals_on_line)
   ax.set_xlabel('Distance from star in pixels')
