@@ -151,10 +151,12 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
           list_pix_x.remove(pix_x)
           list_pix_y.remove(prev_pix_y - 1)
 
-  fig = plt.figure(figsize=(15, 15))
+  fig = plt.figure(figsize=(10, 8))
   ax = fig.add_subplot(111)
   im = ax.imshow(image_data_squeezed_user, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user),
                  vmax=np.max(image_data_squeezed_user))
+
+  ax.set_title("Image with line")
 
   plt.plot(list_pix_x, list_pix_y)
 
@@ -171,11 +173,12 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
   for x2, y2 in zip(list_pix_x, list_pix_y):
     dist.append(np.abs(np.sqrt((x2 - x1)**2 + (y2 - y1)**2)))
 
-  fig = plt.figure(figsize=(15, 15))
+  fig = plt.figure(figsize=(10, 6))
   ax = fig.add_subplot(111)
   ax.plot(dist, vals_on_line)
-  ax.set_xlabel('Distance from star in pixels')
-  ax.set_ylabel('Pixel intensity')
+  ax.set_xlabel('Distance from star in pixels', fontsize = 18)
+  ax.set_ylabel('Pixel intensity', fontsize = 18)
+  ax.tick_params(labelsize=20)
   ax.set_title('Radial Intensity Profile')
 
   fig2 = fig  # captured instead of plt.show()

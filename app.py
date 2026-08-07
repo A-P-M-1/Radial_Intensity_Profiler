@@ -32,13 +32,12 @@ with st.sidebar:
     st.markdown("**Optional line limits** (leave at 0 to use the full image)")
     line_limit_x_axis = st.number_input("xlim (pixels)", min_value=0, value=0, step=1)
     line_limit_y_axis = st.number_input("ylim (pixels)", min_value=0, value=0, step=1)
+    use_wcs_xlim = st.checkbox("Use wcs_xlim instead")
+    use_wcs_ylim = st.checkbox("Use wcs_ylim instead")
 
     st.markdown("**Optional image crop** (leave at 0 to use the full image)")
     image_limit_x = st.number_input("image_limit_x", min_value=0, value=0, step=1)
     image_limit_y = st.number_input("image_limit_y", min_value=0, value=0, step=1)
-
-    use_wcs_xlim = st.checkbox("Use wcs_xlim instead")
-    use_wcs_ylim = st.checkbox("Use wcs_ylim instead")
 
     run_button = st.button("Run", type="primary")
 
@@ -74,13 +73,11 @@ if run_button:
                 image_limit_y=image_limit_y_para,
             )
 
-        col1, col2 = st.columns(2)
-        with col1:
-            st.subheader("Image with cut line")
-            st.pyplot(fig1)
-        with col2:
-            st.subheader("Radial intensity profile")
-            st.pyplot(fig2)
+        st.subheader("Image with cut line")
+        st.pyplot(fig1)
+
+        st.subheader("Radial intensity profile")
+        st.pyplot(fig2)
 
         df = pd.DataFrame({"distance_px": dist, "intensity": vals_on_line})
         st.subheader("Profile data")
