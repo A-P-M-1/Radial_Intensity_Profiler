@@ -5,7 +5,8 @@ from astropy.wcs import WCS
 from matplotlib import colormaps
 
 
-def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None, image_limit_x=None, image_limit_y=None):
+def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None,
+              image_limit_x=None, image_limit_y=None, image_startcrop_x=None, image_startcrop_y=None):
 
   with fits.open(user_file_path) as hdul:
     hdul.info()
@@ -24,7 +25,17 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
   else:
     im_lim_y = head_user['NAXIS2']
 
-  image_data_squeezed_user = image_data_squeezed_user_o[:im_lim_y, :im_lim_x]
+  if image_startcrop_x is not None:
+    im_start_x = image_startcrop_x
+  else:
+    im_start_x = 0
+
+  if image_startcrop_y is not None:
+    im_start_y = image_startcrop_y
+  else:
+    im_start_y = 0
+
+  image_data_squeezed_user = image_data_squeezed_user_o[im_start_y:im_lim_y, im_start_x:im_lim_x]
 
   if wcs_xlim is not None:
     xlim = 'unknown'

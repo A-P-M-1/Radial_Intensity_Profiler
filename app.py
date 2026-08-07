@@ -22,8 +22,6 @@ with st.sidebar:
 
     angle = st.number_input(
         "Angle (degrees)",
-        min_value=-180.0,
-        max_value=180.0,
         value=0.0,
         step=1.0,
         help="Position angle of the cut line.",
@@ -38,6 +36,8 @@ with st.sidebar:
     st.markdown("**Optional image crop** (leave at 0 to use the full image)")
     image_limit_x = st.number_input("image_limit_x", min_value=0, value=0, step=1)
     image_limit_y = st.number_input("image_limit_y", min_value=0, value=0, step=1)
+    image_startcrop_x = st.number_input("image_startcrop_x", min_value=0, value=0, step=1)
+    image_startcrop_y = st.number_input("image_startcrop_y", min_value=0, value=0, step=1)
 
     run_button = st.button("Run", type="primary")
 
@@ -57,6 +57,8 @@ if run_button:
     ylim = int(line_limit_y_axis) if line_limit_y_axis > 0 else None
     image_limit_x_para = int(image_limit_x) if image_limit_x > 0 else None
     image_limit_y_para = int(image_limit_y) if image_limit_y > 0 else None
+    image_startcrop_x_para = int(image_startcrop_x)
+    image_startcrop_y_para = int(image_startcrop_y)
     wcs_xlim = "yes" if use_wcs_xlim else None
     wcs_ylim = "yes" if use_wcs_ylim else None
 
@@ -71,6 +73,8 @@ if run_button:
                 wcs_ylim=wcs_ylim,
                 image_limit_x=image_limit_x_para,
                 image_limit_y=image_limit_y_para,
+                image_startcrop_x=image_startcrop_x_para,
+                image_startcrop_y=image_startcrop_y_para
             )
 
         st.subheader("Image with cut line")
