@@ -170,6 +170,8 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
       list_pix_x.remove(list_pix_x[idx])
     else:
       continue
+  for idx, row in enumerate(list_pix_y):
+    list_pix_y[idx] = np.abs(row - image_startcrop_y)
     
   for idx, col in enumerate(list_pix_x):
     if col > image_limit_x:
@@ -180,14 +182,16 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
       list_pix_y.remove(list_pix_y[idx])
     else:
       continue
+  for idx, col in enumerate(list_pix_x):
+    list_pix_x[idx] = np.abs(col - image_startcrop_x)
 
   list_pix_x.pop()
   list_pix_y.pop()
 
   fig = plt.figure(figsize=(10, 8))
   ax = fig.add_subplot(111)
-  im = ax.imshow(image_data_squeezed_user_cut, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user_cut),
-                 vmax=np.max(image_data_squeezed_user_cut))
+  im = ax.imshow(image_data_squeezed_user_cut, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user),
+                 vmax=np.max(image_data_squeezed_user))
 
   ax.set_title("Image with line")
 
@@ -198,7 +202,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
   vals_on_line = []
 
   for x, y in zip(list_pix_x, list_pix_y):
-    vals_on_line.append(image_data_squeezed_user[int(round(y)), x])
+    vals_on_line.append(image_data_squeezed_user_cut[int(round(y)), x])
 
   dist = []
   x1 = centre[1]
