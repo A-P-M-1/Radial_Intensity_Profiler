@@ -71,10 +71,10 @@ if run_button:
                 ylim=ylim,
                 wcs_xlim=wcs_xlim,
                 wcs_ylim=wcs_ylim,
-                image_limit_x=image_limit_x_para,
-                image_limit_y=image_limit_y_para,
-                image_startcrop_x=image_startcrop_x_para,
-                image_startcrop_y=image_startcrop_y_para
+                image_lim_x=image_limit_x_para,
+                image_lim_y=image_limit_y_para,
+                image_start_x=image_startcrop_x_para,
+                image_start_y=image_startcrop_y_para
             )
 
         st.subheader("Image with cut line")

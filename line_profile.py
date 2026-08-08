@@ -5,36 +5,37 @@ from astropy.wcs import WCS
 from matplotlib import colormaps
 
 
-def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None, image_limit_x=None, image_limit_y=None, image_startcrop_x=None, image_startcrop_y=None):
+def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None, 
+              image_lim_x=None, image_lim_y=None, image_start_x=None, image_start_y=None):
 
   with fits.open(user_file_path) as hdul:
     hdul.info()
     primary_hdu_user = hdul[0]
     head_user = primary_hdu_user.header
     image_data_user = primary_hdu_user.data
-  image_data_squeezed_user_o = np.squeeze(image_data_user)
+  image_data_squeezed_user = np.squeeze(image_data_user)
 
-  if image_limit_x is not None:
-    im_lim_x = image_limit_x
+  if image_lim_x is not None:
+    image_limit_x = image_lim_x
   else:
-    im_lim_x = head_user['NAXIS1']
+    image_limit_x = head_user['NAXIS1']
 
-  if image_limit_y is not None:
-    im_lim_y = image_limit_y
+  if image_lim_y is not None:
+    image_limit_y = image_lim_y
   else:
-    im_lim_y = head_user['NAXIS2']
+    image_limit_y = head_user['NAXIS2']
 
-  if image_startcrop_x is not None:
-    im_start_x = image_startcrop_x
+  if image_start_x is not None:
+    image_startcrop_x = image_start_x
   else:
-    im_start_x = 0
+    image_startcrop_x = 0
 
-  if image_startcrop_y is not None:
-    im_start_y = image_startcrop_y
+  if image_start_y is not None:
+    image_startcrop_y = image_start_y
   else:
-    im_start_y = 0
+    image_startcrop_y = 0
 
-  image_data_squeezed_user = image_data_squeezed_user_o[im_start_y:im_lim_y, im_start_x:im_lim_x]
+  image_data_squeezed_user_cut = image_data_squeezed_user[image_startcrop_y:image_limit_y, image_startcrop_x:image_limit_x]
 
   if wcs_xlim is not None:
     xlim = 'unknown'
@@ -60,23 +61,23 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
 
   elif xlim is None and type(ylim) is int:
     ylim = ylim
-    xlim = im_lim_x
+    xlim = image_limit_x
 
   elif type(xlim) is int and ylim is None:
     xlim = xlim
-    ylim = im_lim_y
+    ylim = image_limit_y
 
   elif xlim is None and ylim is None:
-    ylim = im_lim_y
-    xlim = im_lim_x
+    ylim = image_limit_y
+    xlim = image_limit_x
 
   else:
     raise TypeError("x or y or both are unsuitable datatypes. Check is they are both integers")
 
-  if xlim > im_lim_x:
+  if xlim > image_limit_x:
     raise ValueError("'xlim' must be less than or equal to the number of pixels in the (possibly cropped) image")
 
-  if ylim > im_lim_y:
+  if ylim > image_limit_y:
     raise ValueError("'ylim' must be less than or equal to the number of pixels in the (possibly cropped) image")
 
   vertical = ''
@@ -100,9 +101,9 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         list_pix_y.append(prev_pix_y - gradient)
         prev_pix_y = prev_pix_y - gradient
         pix_x -= 1
-        if prev_pix_y < ylim or prev_pix_y < 1 or pix_x < xlim or pix_x < 1:
+        if prev_pix_y < ylim or prev_pix_y < image_startcrop_y or pix_x < xlim or pix_x < image_startcrop_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x + 1)
+          list_pix_x.remove(pix_x)
 
     elif xlim < pix_x and ylim > prev_pix_y:
       while xlim < pix_x and prev_pix_y < ylim and prev_pix_y > 0 and pix_x > 0:
@@ -110,9 +111,9 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         list_pix_y.append(prev_pix_y + gradient)
         prev_pix_y = prev_pix_y + gradient
         pix_x -= 1
-        if prev_pix_y > ylim or prev_pix_y < 1 or pix_x < xlim or pix_x < 1:
+        if prev_pix_y > ylim or prev_pix_y > image_limit_y or pix_x < xlim or pix_x < image_startcrop_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x + 1)
+          list_pix_x.remove(pix_x)
 
     elif xlim > pix_x and ylim < prev_pix_y:
       while xlim > pix_x and prev_pix_y > ylim and prev_pix_y > 0 and pix_x > 0:
@@ -120,9 +121,9 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         list_pix_y.append(prev_pix_y - gradient)
         prev_pix_y = prev_pix_y - gradient
         pix_x += 1
-        if prev_pix_y < ylim or prev_pix_y < 1 or pix_x > xlim or pix_x < 1:
+        if prev_pix_y < ylim or prev_pix_y < image_startcrop_y or pix_x > xlim or pix_x > image_limit_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x - 1)
+          list_pix_x.remove(pix_x)
 
     else:
       while pix_x < xlim and prev_pix_y < ylim and prev_pix_y > 0 and pix_x > 0:
@@ -130,9 +131,9 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         list_pix_y.append(prev_pix_y + gradient)
         prev_pix_y = prev_pix_y + gradient
         pix_x += 1
-        if prev_pix_y > (ylim - 1) or prev_pix_y < 1 or pix_x > xlim or pix_x < 1:
+        if prev_pix_y > ylim or prev_pix_y > image_limit_y or pix_x > xlim or pix_x > image_limit_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x - 1)
+          list_pix_x.remove(pix_x)
 
   else:
     if ylim > prev_pix_y and angle < 0:
@@ -148,23 +149,43 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         list_pix_x.append(pix_x)
         list_pix_y.append(prev_pix_y)
         prev_pix_y -= 1
-        if prev_pix_y < (ylim - 1) or prev_pix_y < 1:
+        if prev_pix_y < ylim or prev_pix_y < 1:
           list_pix_x.remove(pix_x)
-          list_pix_y.remove(prev_pix_y + 1)
+          list_pix_y.remove(prev_pix_y)
 
     else:
       while ylim >= prev_pix_y and prev_pix_y > 0:
         list_pix_x.append(pix_x)
         list_pix_y.append(prev_pix_y)
         prev_pix_y += 1
-        if prev_pix_y > (ylim - 1) or prev_pix_y < 1:
+        if prev_pix_y > ylim or prev_pix_y > image_limit_y:
           list_pix_x.remove(pix_x)
           list_pix_y.remove(prev_pix_y - 1)
 
+  for idx, row in enumerate(list_pix_y):
+    if row > image_limit_y:
+      list_pix_y.remove(row)
+      list_pix_x.remove(list_pix_x[idx])
+    elif row < image_startcrop_y:
+      list_pix_y.remove(row)
+      list_pix_x.remove(list_pix_x[idx])
+    else:
+      continue
+    
+  for idx, col in enumerate(list_pix_x):
+    if col > image_limit_x:
+      list_pix_x.remove(col)
+      list_pix_y.remove(list_pix_y[idx])
+    elif col < image_startcrop_x:
+      list_pix_x.remove(col)
+      list_pix_y.remove(list_pix_y[idx])
+    else:
+      continue
+
   fig = plt.figure(figsize=(10, 8))
   ax = fig.add_subplot(111)
-  im = ax.imshow(image_data_squeezed_user, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user),
-                 vmax=np.max(image_data_squeezed_user))
+  im = ax.imshow(image_data_squeezed_user_cut, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user_cut),
+                 vmax=np.max(image_data_squeezed_user_cut))
 
   ax.set_title("Image with line")
 
