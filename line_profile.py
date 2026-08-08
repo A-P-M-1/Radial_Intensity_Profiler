@@ -181,6 +181,9 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
     else:
       continue
 
+  list_pix_x.pop()
+  list_pix_y.pop()
+
   fig = plt.figure(figsize=(10, 8))
   ax = fig.add_subplot(111)
   im = ax.imshow(image_data_squeezed_user_cut, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user_cut),
