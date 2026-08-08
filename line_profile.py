@@ -102,7 +102,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         pix_x -= 1
         if prev_pix_y < ylim or prev_pix_y < image_startcrop_y or pix_x < xlim or pix_x < image_startcrop_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x)
+          list_pix_x.remove(pix_x+1)
 
     elif xlim < pix_x and ylim > prev_pix_y:
       while xlim < pix_x and prev_pix_y < ylim and prev_pix_y > 0 and pix_x > 0:
@@ -112,7 +112,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         pix_x -= 1
         if prev_pix_y > ylim or prev_pix_y > image_limit_y or pix_x < xlim or pix_x < image_startcrop_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x)
+          list_pix_x.remove(pix_x+1)
 
     elif xlim > pix_x and ylim < prev_pix_y:
       while xlim > pix_x and prev_pix_y > ylim and prev_pix_y > 0 and pix_x > 0:
@@ -122,7 +122,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         pix_x += 1
         if prev_pix_y < ylim or prev_pix_y < image_startcrop_y or pix_x > xlim or pix_x > image_limit_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x)
+          list_pix_x.remove(pix_x-1)
 
     else:
       while pix_x < xlim and prev_pix_y < ylim and prev_pix_y > 0 and pix_x > 0:
@@ -132,7 +132,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         pix_x += 1
         if prev_pix_y > ylim or prev_pix_y > image_limit_y or pix_x > xlim or pix_x > image_limit_x:
           list_pix_y.remove(prev_pix_y)
-          list_pix_x.remove(pix_x)
+          list_pix_x.remove(pix_x-1)
 
   else:
     if ylim > prev_pix_y and angle < 0:
@@ -148,16 +148,16 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
         list_pix_x.append(pix_x)
         list_pix_y.append(prev_pix_y)
         prev_pix_y -= 1
-        if prev_pix_y < ylim or prev_pix_y < 1:
+        if prev_pix_y < (ylim-1) or prev_pix_y < 1:
           list_pix_x.remove(pix_x)
-          list_pix_y.remove(prev_pix_y)
+          list_pix_y.remove(prev_pix_y + 1)
 
     else:
       while ylim >= prev_pix_y and prev_pix_y > 0:
         list_pix_x.append(pix_x)
         list_pix_y.append(prev_pix_y)
         prev_pix_y += 1
-        if prev_pix_y > ylim or prev_pix_y > image_limit_y:
+        if prev_pix_y > (ylim-1) or prev_pix_y > image_limit_y:
           list_pix_x.remove(pix_x)
           list_pix_y.remove(prev_pix_y - 1)
 
