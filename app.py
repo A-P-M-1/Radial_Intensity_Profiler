@@ -30,8 +30,8 @@ with st.sidebar:
     st.markdown("**Optional line limits** (leave at 0 to use the full image)")
     line_limit_x_axis = st.number_input("xlim (pixels)", min_value=0, value=0, step=1)
     line_limit_y_axis = st.number_input("ylim (pixels)", min_value=0, value=0, step=1)
-    use_wcs_xlim = st.checkbox("Use wcs_xlim instead")
-    use_wcs_ylim = st.checkbox("Use wcs_ylim instead")
+    #use_wcs_xlim = st.checkbox("Use wcs_xlim instead")
+    #use_wcs_ylim = st.checkbox("Use wcs_ylim instead")
 
     st.markdown("**Optional image crop** (leave at 0 to use the full image)")
     image_limit_x = st.number_input("image_limit_x", min_value=0, value=0, step=1)
@@ -59,8 +59,8 @@ if run_button:
     image_limit_y_para = int(image_limit_y) if image_limit_y > 0 else None
     image_startcrop_x_para = int(image_startcrop_x)
     image_startcrop_y_para = int(image_startcrop_y)
-    wcs_xlim = "yes" if use_wcs_xlim else None
-    wcs_ylim = "yes" if use_wcs_ylim else None
+    #wcs_xlim = "yes" if use_wcs_xlim else None
+    #wcs_ylim = "yes" if use_wcs_ylim else None
 
     try:
         with st.spinner("Extracting profile..."):
@@ -69,8 +69,8 @@ if run_button:
                 angle,
                 xlim=xlim,
                 ylim=ylim,
-                wcs_xlim=wcs_xlim,
-                wcs_ylim=wcs_ylim,
+                #wcs_xlim=wcs_xlim,
+                #wcs_ylim=wcs_ylim,
                 image_lim_x=image_limit_x_para,
                 image_lim_y=image_limit_y_para,
                 image_start_x=image_startcrop_x_para,
