@@ -5,8 +5,7 @@ from astropy.wcs import WCS
 from matplotlib import colormaps
 
 
-def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None,
-              image_limit_x=None, image_limit_y=None, image_startcrop_x=None, image_startcrop_y=None):
+def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_ylim=None, image_limit_x=None, image_limit_y=None, image_startcrop_x=None, image_startcrop_y=None):
 
   with fits.open(user_file_path) as hdul:
     hdul.info()
