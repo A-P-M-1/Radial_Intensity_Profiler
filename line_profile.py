@@ -161,27 +161,35 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
           list_pix_x.remove(pix_x)
           list_pix_y.remove(prev_pix_y - 1)
 
+  pix_y_del = []
+  pix_x_del = []
   for idx, row in enumerate(list_pix_y):
     if row > image_limit_y:
-      list_pix_y.remove(row)
-      list_pix_x.remove(list_pix_x[idx])
+      pix_y_del.append(idx)
     elif row < image_startcrop_y:
-      list_pix_y.remove(row)
-      list_pix_x.remove(list_pix_x[idx])
+      pix_y_del.append(idx)
     else:
       continue
+
+  for i in pix_y_del:
+    list_pix_y.pop(i)
+    list_pix_x.pop(i)
+
   for idx, row in enumerate(list_pix_y):
     list_pix_y[idx] = np.abs(row - image_startcrop_y)
     
   for idx, col in enumerate(list_pix_x):
     if col > image_limit_x:
-      list_pix_x.remove(col)
-      list_pix_y.remove(list_pix_y[idx])
+      pix_x_del.append(idx)
     elif col < image_startcrop_x:
-      list_pix_x.remove(col)
-      list_pix_y.remove(list_pix_y[idx])
+      pix_x_del.append(idx)
     else:
       continue
+
+  for i in pix_x_del:
+    list_pix_x.pop(i)
+    list_pix_y.pop(i)
+
   for idx, col in enumerate(list_pix_x):
     list_pix_x[idx] = np.abs(col - image_startcrop_x)
 
