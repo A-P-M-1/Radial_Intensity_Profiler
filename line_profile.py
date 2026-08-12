@@ -164,38 +164,42 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
   pix_y_del = []
   pix_x_del = []
   for idx, row in enumerate(list_pix_y):
-    if row > image_limit_y:
+    if row >= image_limit_y:
       pix_y_del.append(idx)
     elif row < image_startcrop_y:
       pix_y_del.append(idx)
     else:
       continue
 
-  for i in pix_y_del:
-    list_pix_y.pop(i)
+  for idx, i in enumerate(pix_y_del):
     list_pix_x.pop(i)
+    for x, na in enumerate(pix_x_del[idx:]):
+      pix_x_del[idx+x] -= 1
+    list_pix_y.pop(i)
+    for y, na in enumerate(pix_y_del[idx:]):
+      pix_y_del[idx+y] -= 1
 
   for idx, row in enumerate(list_pix_y):
     list_pix_y[idx] = np.abs(row - image_startcrop_y)
     
   for idx, col in enumerate(list_pix_x):
-    if col > image_limit_x:
+    if col >= image_limit_x:
       pix_x_del.append(idx)
     elif col < image_startcrop_x:
       pix_x_del.append(idx)
     else:
       continue
 
-  for i in pix_x_del:
+  for idx, i in enumerate(pix_x_del):
     list_pix_x.pop(i)
+    for x, na in enumerate(pix_x_del[idx:]):
+      pix_x_del[idx+x] -= 1
     list_pix_y.pop(i)
+    for y, na in enumerate(pix_y_del[idx:]):
+      pix_y_del[idx+y] -= 1
 
   for idx, col in enumerate(list_pix_x):
     list_pix_x[idx] = np.abs(col - image_startcrop_x)
-
-  list_pix_x.pop()
-  list_pix_y.pop()
-
   fig = plt.figure(figsize=(10, 8))
   ax = fig.add_subplot(111)
   im = ax.imshow(image_data_squeezed_user_cut, cmap='inferno', origin='lower', vmin=np.min(image_data_squeezed_user),
@@ -205,7 +209,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
 
   plt.plot(list_pix_x, list_pix_y)
 
-  fig1 = fig  # captured instead of plt.show()
+  fig1 = fig
 
   vals_on_line = []
 
@@ -226,6 +230,6 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
   ax.tick_params(labelsize=20)
   ax.set_title('Radial Intensity Profile')
 
-  fig2 = fig  # captured instead of plt.show()
+  fig2 = fig
 
   return fig1, fig2, dist, vals_on_line
