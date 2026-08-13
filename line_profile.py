@@ -161,6 +161,9 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
           list_pix_x.remove(pix_x)
           list_pix_y.remove(prev_pix_y - 1)
 
+  list_pix_x_o = list_pix_x.copy()
+  list_pix_y_o = list_pix_y.copy()
+
   pix_y_del = []
   pix_x_del = []
   for idx, row in enumerate(list_pix_y):
@@ -219,7 +222,7 @@ def make_line(user_file_path, angle, xlim=None, ylim=None, wcs_xlim=None, wcs_yl
   dist = []
   x1 = centre[1]
   y1 = centre[0]
-  for x2, y2 in zip(list_pix_x, list_pix_y):
+  for x2, y2 in zip(list_pix_x_o, list_pix_y_o):
     dist.append(np.abs(np.sqrt((x2 - x1)**2 + (y2 - y1)**2)))
 
   fig = plt.figure(figsize=(10, 6))
